@@ -3,35 +3,165 @@ title: "COVID-19"
 author: "Marcos Abreu"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns
+    orientation: rows
+    social: menu
+    source_code: embed
     vertical_layout: fill
 ---
 
 ```{r setup, include=FALSE}
+#---------------------- Update Data ------
 library(flexdashboard)
+devtools::install_github("RamiKrispin/coronavirus")
+library(coronavirus)
+
+data("coronavirus")
+
+#------------------ Parameters ------------------
+# Set colors
+# https://www.w3.org/TR/css-color-3/#svg-color
+confirmed_color <- "purple"
+active_color <- "#1f77b4"
+recovered_color <- "forestgreen"
+death_color <- "red"
+#countries <- c("Brazil", "Argentina", "Belgium", "Italy", "US")
+countries <- c("Brazil")
 ```
 
-Column {data-width=650}
+
+```{r df_totals, include=FALSE}
+#------------- Data - Total cases by country --------------
+`%>%` <- magrittr::`%>%`
+df_totals <- coronavirus %>% 
+  dplyr::filter(Country.Region %in% countries) %>% 
+  dplyr::group_by(Country.Region, type) %>% 
+  dplyr::summarise(total = sum(cases)) %>% 
+  tidyr::pivot_wider(names_from = type, 
+                     values_from = total) %>% 
+  dplyr::arrange(-confirmed) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::mutate(country = Country.Region) %>% 
+  dplyr::mutate(country = trimws(country)) %>% 
+  dplyr::mutate(country = factor(country, levels = country))
+```
+
+
+```{r df_daily, include=FALSE}
+#------------- Data - Total cases daily --------------
+`%>%` <- magrittr::`%>%`
+df_daily <- coronavirus %>% 
+  dplyr::filter(Country.Region %in% c("Brazil")) %>% 
+  dplyr::group_by(date, type) %>% 
+  dplyr::summarise(total = sum(cases, na.rm = TRUE)) %>% 
+  tidyr::pivot_wider(names_from = type, 
+                     values_from = total) %>% 
+  dplyr::arrange(date) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::mutate(active = confirmed - death) %>% 
+  dplyr::mutate(
+    confirmed_cum = cumsum(confirmed),
+    death_cum = cumsum(death),
+    active_cum = cumsum(active)
+  )
+
+
+```
+
+
+Summary
+=======================================================================
+Row
+-----------------------------------------------------------------------
+### confirmed {.value-box}
+
+```{r}
+valueBox(value = df_totals$confirmed, 
+         caption = "Casos confirmados", 
+         icon = "fas fa-user-md", 
+         color = "purple")
+```
+
+### death {.value-box}
+```{r}
+valueBox(value = df_totals$death, 
+         caption = "Casos confirmados", 
+         icon = "fas fa-user-md", 
+         color = "red")
+```
+
+Row
 -----------------------------------------------------------------------
 
-### Chart A
-
+### **Daily cumulative cases by type** (Brazil)
 ```{r}
-
+plotly::plot_ly(data = df_daily) %>%
+  plotly::add_trace(
+    x = ~date,
+    y = ~confirmed_cum,
+    type = "scatter",
+    mode = "lines+markers",
+    # name = "Active",
+    name = "Confirmed",
+    line = list(color = active_color),
+    marker = list(color = active_color)
+  ) %>%
+  plotly::add_trace(
+    x = ~date,
+    y = ~death_cum,
+    type = "scatter",
+    mode = "lines+markers",
+    name = "Death",
+    line = list(color = death_color),
+    marker = list(color = death_color)
+  ) %>%
+  plotly::add_annotations(
+    x = as.Date("2020-02-04"),
+    y = 1,
+    text = paste("First case"),
+    xref = "x",
+    yref = "y",
+    arrowhead = 5,
+    arrowhead = 3,
+    arrowsize = 1,
+    showarrow = TRUE,
+    ax = -10,
+    ay = -90
+  ) %>%
+  plotly::add_annotations(
+    x = as.Date("2020-03-11"),
+    y = 3,
+    text = paste("First death"),
+    xref = "x",
+    yref = "y",
+    arrowhead = 5,
+    arrowhead = 3,
+    arrowsize = 1,
+    showarrow = TRUE,
+    ax = -90,
+    ay = -90
+  ) %>%
+  plotly::add_annotations(
+    x = as.Date("2020-03-18"),
+    y = 14,
+    text = paste(
+      "New containment",
+      "",
+      "measures"
+    ),
+    xref = "x",
+    yref = "y",
+    arrowhead = 5,
+    arrowhead = 3,
+    arrowsize = 1,
+    showarrow = TRUE,
+    ax = -10,
+    ay = -90
+  ) %>%
+  plotly::layout(
+    title = "",
+    yaxis = list(title = "Cumulative number of cases"),
+    xaxis = list(title = "Date"),
+    legend = list(x = 0.1, y = 0.9),
+    hovermode = "compare"
+  )
 ```
-
-Column {data-width=350}
------------------------------------------------------------------------
-
-### Chart B
-
-```{r}
-
-```
-
-### Chart C
-
-```{r}
-
-```
-
