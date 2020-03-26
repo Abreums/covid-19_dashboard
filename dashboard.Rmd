@@ -1,6 +1,5 @@
 ---
-title: "COVID-19 Brazil"
-author: "Marcos Abreu"
+title: "COVID-19"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
@@ -68,7 +67,105 @@ df_daily <- coronavirus %>%
 ```
 
 
-Summary
+Brasil
+=======================================================================
+Row
+-----------------------------------------------------------------------
+### confirmed {.value-box}
+
+```{r}
+valueBox(value = df_totals$confirmed, 
+         caption = "Casos confirmados", 
+         icon = "fas fa-user-md", 
+         color = "purple")
+```
+
+### death {.value-box}
+```{r}
+valueBox(value = df_totals$death, 
+         caption = "Casos confirmados", 
+         icon = "fas fa-user-md", 
+         color = "red")
+```
+
+Row
+-----------------------------------------------------------------------
+
+### **Daily cumulative cases by type** (Brazil)
+```{r}
+plotly::plot_ly(data = df_daily) %>%
+  plotly::add_trace(
+    x = ~date,
+    y = ~confirmed_cum,
+    type = "scatter",
+    mode = "lines+markers",
+    # name = "Active",
+    name = "Confirmed",
+    line = list(color = active_color),
+    marker = list(color = active_color)
+  ) %>%
+  plotly::add_trace(
+    x = ~date,
+    y = ~death_cum,
+    type = "scatter",
+    mode = "lines+markers",
+    name = "Death",
+    line = list(color = death_color),
+    marker = list(color = death_color)
+  ) %>%
+  plotly::add_annotations(
+    x = as.Date("2020-02-04"),
+    y = 1,
+    text = paste("First case"),
+    xref = "x",
+    yref = "y",
+    arrowhead = 5,
+    arrowhead = 3,
+    arrowsize = 1,
+    showarrow = TRUE,
+    ax = -10,
+    ay = -90
+  ) %>%
+  plotly::add_annotations(
+    x = as.Date("2020-03-11"),
+    y = 3,
+    text = paste("First death"),
+    xref = "x",
+    yref = "y",
+    arrowhead = 5,
+    arrowhead = 3,
+    arrowsize = 1,
+    showarrow = TRUE,
+    ax = -90,
+    ay = -90
+  ) %>%
+  plotly::add_annotations(
+    x = as.Date("2020-03-18"),
+    y = 14,
+    text = paste(
+      "New containment",
+      "",
+      "measures"
+    ),
+    xref = "x",
+    yref = "y",
+    arrowhead = 5,
+    arrowhead = 3,
+    arrowsize = 1,
+    showarrow = TRUE,
+    ax = -10,
+    ay = -90
+  ) %>%
+  plotly::layout(
+    title = "",
+    yaxis = list(title = "Cumulative number of cases"),
+    xaxis = list(title = "Date"),
+    legend = list(x = 0.1, y = 0.9),
+    hovermode = "compare"
+  )
+```
+
+Mundo
 =======================================================================
 Row
 -----------------------------------------------------------------------
