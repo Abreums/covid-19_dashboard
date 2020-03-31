@@ -302,6 +302,7 @@ wd_daily <- coronavirus %>%
   tidyr::pivot_wider(names_from = Country.Region, 
                      values_from = total, values_fill = list(total = 0)) %>% 
   dplyr::arrange(date)
+#wd_daily[wd_daily==0] <- NA
   
 
 ```
@@ -309,8 +310,7 @@ wd_daily <- coronavirus %>%
 
 ### **Casos acumulados por tipo**
 ```{r}
-
-plotly::plot_ly(data = wd_daily) %>% 
+plotly::plot_ly(data = wd_daily) %>%
   plotly::add_trace(
     x = ~date,
     y = ~Argentina,
@@ -324,46 +324,34 @@ plotly::plot_ly(data = wd_daily) %>%
     type = "scatter",
     mode = "lines+markers",
     name = "Brazil"
-  ) %>% 
+  ) %>%
   plotly::add_trace(
     x = ~date,
     y = ~US,
     type = "scatter",
     mode = "lines+markers",
     name = "US"
-  ) %>% 
+  ) %>%
   plotly::add_trace(
     x = ~date,
     y = ~Germany,
     type = "scatter",
     mode = "lines+markers",
     name = "Germany"
-  ) %>% 
+  ) %>%
   plotly::add_trace(
     x = ~date,
-    y = ~Japan,
+    y = ~Spain,
     type = "scatter",
     mode = "lines+markers",
-    name = "Japan"
-  ) %>% 
-  plotly::add_trace(
-    x = ~date,
-    y = ~Chile,
-    type = "scatter",
-    mode = "lines+markers",
-    name = "Chile"
-  ) %>% 
-  plotly::layout(yaxis = list(title = "Eventos no dia\n (escala Logarítmica)",
-                              type = "log"),
-                 xaxis = list(title = ""),
-                 hovermode = "compare",
-                  margin =  list(
-                   # l = 60,
-                   # r = 40,
-                   b = 10,
-                   t = 10,
-                   pad = 2
-                 ))
-
-
+    name = "Spain"
+  ) %>%
+  plotly::layout(
+    title = "",
+    yaxis = list(title = "Número de casos acumulados",
+                              type = "log") ,
+    xaxis = list(title = "Data"),
+    legend = list(x = 0.1, y = 0.9),
+    hovermode = "compare"
+  )
 ```
