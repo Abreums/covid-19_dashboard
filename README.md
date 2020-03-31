@@ -18,7 +18,10 @@ Krispin](https://github.com/RamiKrispin/coronavirus_dashboard)
 
 ## Dados
 
-Os dados utilizados foram obtidos de …
+Os dados utilizados foram obtidos do projeto coronavirus de Rami
+Krispin.
+
+![](img/img1.png) ![](img/img2.png)
 
 ## Contato
 
@@ -27,7 +30,7 @@ Qualquer dúvida, posso ser contactado através do email
 
 ## Última atualização
 
-As informações foram atualizadas pela última vez em Segunda Feira Março
-23, 2020.
+As informações foram atualizadas pela última vez em Terça Feira Março
+31, 2020.
 
 <br> .
