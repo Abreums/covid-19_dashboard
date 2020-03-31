@@ -23,7 +23,11 @@ O trabalho foi baseado nestas fontes e referências:
 
 ## Dados
 
-Os dados utilizados foram obtidos de ...
+Os dados utilizados foram obtidos do projeto coronavirus de Rami Krispin.
+
+![](img/img1.png)
+![](img/img2.png)
+
 
 ## Contato
 
